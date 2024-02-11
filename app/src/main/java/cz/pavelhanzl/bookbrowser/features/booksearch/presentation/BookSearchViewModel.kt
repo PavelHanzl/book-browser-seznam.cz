@@ -11,46 +11,31 @@ import cz.pavelhanzl.bookbrowser.features.bookdetail.Model.Book
 import cz.pavelhanzl.bookbrowser.features.bookdetail.Model.VolumeInfo
 import kotlinx.coroutines.launch
 
-class BookSearchViewModel(val bookRepository: BookRepository): ViewModel() {
+class BookSearchViewModel(val bookRepository: BookRepository) : ViewModel() {
     var booklist by mutableStateOf<List<Book>?>(null)
         private set
 
+    var searchText by mutableStateOf("")
 
-fun getListOfBook(){
-    booklist = emptyList()
+    fun getListOfBooks() {
+        //Return empty list if Searchbar is empty
+        if (searchText == "") {
+            booklist = emptyList()
+            return}
 
-    viewModelScope.launch {
-        try {
-            val authorName: String = "Nesbø"
-            // čistý seznam knížek vrácený od google api
-            booklist = bookRepository.searchBooksByAuthor(authorName)
+        viewModelScope.launch {
+            try {
+                // čistý seznam knížek vrácený od google api
+                booklist = bookRepository.searchBooksByAuthor(searchText)
 
+            } catch (e: Exception) {
 
-
-
-
-
-            // Zpracujte data
-        } catch (e: Exception) {
-            // Zpracujte výjimku
+            }
         }
     }
 
-
-
-//    booklist =listOf(
-//        Book("1", "knizka"),
-//        Book("2", "knizecka"),
-//        Book("3", "kniha"),
-//        Book("4", "kniga"),
-//    )
-}
-
-    fun addBookToList(){
-        booklist = booklist?.plus(
-            Book("5",
-                VolumeInfo("Test", listOf("dsa","dada"),"adsasd","description", imageLinks = null))
-        )
+    fun onSearchTextChanged(newText: String) {
+        searchText = newText
     }
 
 

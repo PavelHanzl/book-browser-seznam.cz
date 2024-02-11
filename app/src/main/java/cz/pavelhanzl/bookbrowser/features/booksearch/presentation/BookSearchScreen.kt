@@ -49,8 +49,8 @@ fun BookSearchScreen(
         viewModelStoreOwner = LocalContext.current as ComponentActivity
     )
 ) {
+    viewModel.getListOfBooks()
 
-    viewModel.getListOfBook()
     Scaffold {
         Column(
             modifier = Modifier
@@ -62,24 +62,27 @@ fun BookSearchScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                SearchBar()
+                SearchBar(
+                    text=viewModel.searchText,
+                    onTextChange = { viewModel.onSearchTextChanged(it) },
+                )
 
                 BookList(
                     viewModel.booklist
                 )
-                Button(
-                    onClick = { viewModel.addBookToList() }
+//                Button(
+//                    onClick = { viewModel.addBookToList() }
+//
+//                ) {
+//                    Text(text = "add book")
+//                }
+//                Button(
+//                    onClick = { navController.navigate("bookdetail") }
+//
+//                ) {
+//                    Text(text = "Navigate to book detail")
+//                }
 
-                ) {
-                    Text(text = "add book")
-                }
-                Button(
-                    onClick = { navController.navigate("bookdetail") }
-
-                ) {
-                    Text(text = "Navigate to book detail")
-                }
-                // Zde bude další
             }
 
 
@@ -89,12 +92,10 @@ fun BookSearchScreen(
 }
 
 @Composable
-fun SearchBar() {
-    var text by remember { mutableStateOf("") }
-
+fun SearchBar(text: String, onTextChange: (String) -> Unit) {
     OutlinedTextField(
         value = text,
-        onValueChange = { text = it },
+        onValueChange = onTextChange,
         label = { Text("Zadejte jméno autora") },
         modifier = Modifier
             .fillMaxWidth()
