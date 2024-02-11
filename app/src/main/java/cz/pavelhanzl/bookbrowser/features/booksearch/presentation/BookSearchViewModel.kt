@@ -12,15 +12,24 @@ import cz.pavelhanzl.bookbrowser.features.bookdetail.Model.VolumeInfo
 import kotlinx.coroutines.launch
 
 class BookSearchViewModel(val bookRepository: BookRepository): ViewModel() {
-    var booklist by mutableStateOf(listOf<Book>())
+    var booklist by mutableStateOf<List<Book>?>(null)
         private set
 
 
 fun getListOfBook(){
+    booklist = emptyList()
 
     viewModelScope.launch {
         try {
-            booklist = bookRepository.searchBooks("Android")!!
+            val authorName: String = "Nesbø"
+            // čistý seznam knížek vrácený od google api
+            booklist = bookRepository.searchBooksByAuthor(authorName)
+
+
+
+
+
+
             // Zpracujte data
         } catch (e: Exception) {
             // Zpracujte výjimku
@@ -38,7 +47,10 @@ fun getListOfBook(){
 }
 
     fun addBookToList(){
-        booklist = booklist + Book("5", VolumeInfo("Test", listOf("dsa","dada"),"adsasd","description", imageLinks = null))
+        booklist = booklist?.plus(
+            Book("5",
+                VolumeInfo("Test", listOf("dsa","dada"),"adsasd","description", imageLinks = null))
+        )
     }
 
 

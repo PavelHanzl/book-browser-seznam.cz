@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -39,8 +40,9 @@ import org.koin.java.KoinJavaComponent.inject
 @Composable
 fun BookSearchScreen(
     navController: NavController,
-  viewModel: BookSearchViewModel = koinViewModel(
-        viewModelStoreOwner = LocalContext.current as ComponentActivity)
+    viewModel: BookSearchViewModel = koinViewModel(
+        viewModelStoreOwner = LocalContext.current as ComponentActivity
+    )
 ) {
 
     viewModel.getListOfBook()
@@ -58,7 +60,6 @@ fun BookSearchScreen(
                 SearchBar()
 
                 BookList(
-                    /*TODO: nahradit za repozitory ve viewmodelu*/
                     viewModel.booklist
                 )
                 Button(
@@ -97,21 +98,29 @@ fun SearchBar() {
 }
 
 @Composable
-fun BookList(books: List<Book>) {
-    LazyColumn {
-        items(books) { book ->
-            BookItem(book)
+fun BookList(books: List<Book>?) {
+    books?.let {
+        LazyColumn {
+            items(books) { book ->
+                BookItem(book)
+            }
         }
     }
+
 }
 
 @Composable
 fun BookItem(book: Book) {
-    Row(modifier = Modifier
-        .padding(10.dp)
-        .clickable(enabled = true, onClick = { Log.d("myTag", "click ${book.volumeInfo.title}") })) {
-        Text(text = book.id)
+    Column(
+        modifier = Modifier
+            .padding(10.dp)
+            .clickable(
+                enabled = true,
+                onClick = { Log.d("myTag", "click ${book.volumeInfo.title}") })
+    ) {
+
         Text(text = book.volumeInfo.title)
+        Text(text = book.volumeInfo.authors?.joinToString(", ") ?: "Neznámý autor")
     }
 
 }
