@@ -109,9 +109,9 @@ fun BookList(books: List<Book>) {
 fun BookItem(book: Book) {
     Row(modifier = Modifier
         .padding(10.dp)
-        .clickable(enabled = true, onClick = { Log.d("myTag", "click ${book.name}") })) {
+        .clickable(enabled = true, onClick = { Log.d("myTag", "click ${book.volumeInfo.title}") })) {
         Text(text = book.id)
-        Text(text = book.name)
+        Text(text = book.volumeInfo.title)
     }
 
 }

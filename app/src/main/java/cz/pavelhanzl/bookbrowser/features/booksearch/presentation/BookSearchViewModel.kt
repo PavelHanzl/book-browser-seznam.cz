@@ -5,8 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import cz.pavelhanzl.bookbrowser.data.BookRepository
 import cz.pavelhanzl.bookbrowser.features.bookdetail.Model.Book
+import cz.pavelhanzl.bookbrowser.features.bookdetail.Model.VolumeInfo
+import kotlinx.coroutines.launch
 
 class BookSearchViewModel(val bookRepository: BookRepository): ViewModel() {
     var booklist by mutableStateOf(listOf<Book>())
@@ -14,7 +17,17 @@ class BookSearchViewModel(val bookRepository: BookRepository): ViewModel() {
 
 
 fun getListOfBook(){
-booklist=bookRepository.getAllBooks()
+
+    viewModelScope.launch {
+        try {
+            booklist = bookRepository.searchBooks("Android")!!
+            // Zpracujte data
+        } catch (e: Exception) {
+            // Zpracujte výjimku
+        }
+    }
+
+
 
 //    booklist =listOf(
 //        Book("1", "knizka"),
@@ -25,7 +38,7 @@ booklist=bookRepository.getAllBooks()
 }
 
     fun addBookToList(){
-        booklist = booklist + Book("5", "casopis")
+        booklist = booklist + Book("5", VolumeInfo("Test", listOf("dsa","dada"),"adsasd","description", imageLinks = null))
     }
 
 
