@@ -4,6 +4,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 
@@ -31,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -51,39 +53,21 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun BookSearchScreen(
     navController: NavController,
-    viewModel: BookSearchViewModel = koinViewModel(
-        viewModelStoreOwner = LocalContext.current as ComponentActivity
-    )
+    viewModel: BookSearchViewModel = koinViewModel()
 ) {
 
-    val state = viewModel.state
     Scaffold(
         topBar = {
             SearchBar(viewModel)
         }
     ) { it ->
-        Column(
+        BookList(
             modifier = Modifier
-                .padding(it)
                 .fillMaxSize()
-                .imePadding()
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
-            ) {
-
-
-                BookList(
-                    viewModel
-                )
-
-            }
-
-
-        }
+                .padding(it)
+                .imePadding(),
+            viewModel = viewModel
+        )
     }
 
 }
@@ -100,7 +84,7 @@ fun SearchBar(viewModel: BookSearchViewModel) {
             .height(IntrinsicSize.Max),
         verticalAlignment = Alignment.Bottom
     ) {
-
+        val focusManager = LocalFocusManager.current
 
         OutlinedTextField(
             modifier = Modifier.weight(1f),
@@ -117,17 +101,28 @@ fun SearchBar(viewModel: BookSearchViewModel) {
         OutlinedIconButton(
             modifier = Modifier
                 .size(55.dp),
-            onClick = { viewModel.onSearchButtonClick() }) {
+            onClick = {
+                focusManager.clearFocus()
+                viewModel.onSearchButtonClick()
+            }
+        ) {
             Icon(Icons.Outlined.Search, contentDescription = "Hledat")
         }
     }
 }
 
 @Composable
-fun BookList(viewModel: BookSearchViewModel) {
-    var state = viewModel.state
+fun BookList(
+    modifier: Modifier = Modifier,
+    viewModel: BookSearchViewModel
+) {
+    val state = viewModel.state
 
-    LazyColumn {
+    LazyColumn(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
         items(state.items.size) { i ->
             BookItem(state.items[i])
 
