@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -25,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -49,8 +51,8 @@ fun BookSearchScreen(
         viewModelStoreOwner = LocalContext.current as ComponentActivity
     )
 ) {
-    viewModel.getListOfBooks()
-
+    //viewModel.getListOfBooks()
+    val state = viewModel.state
     Scaffold {
         Column(
             modifier = Modifier
@@ -63,12 +65,12 @@ fun BookSearchScreen(
                 verticalArrangement = Arrangement.Top
             ) {
                 SearchBar(
-                    text=viewModel.searchText,
+                    text = viewModel.searchText,
                     onTextChange = { viewModel.onSearchTextChanged(it) },
                 )
 
                 BookList(
-                    viewModel.booklist
+                    viewModel
                 )
 //                Button(
 //                    onClick = { viewModel.addBookToList() }
@@ -104,11 +106,30 @@ fun SearchBar(text: String, onTextChange: (String) -> Unit) {
 }
 
 @Composable
-fun BookList(books: List<Book>?) {
-    books?.let {
+fun BookList(viewModel: BookSearchViewModel) {
+    var state = viewModel.state
+
+    state.items?.let {
         LazyColumn {
-            items(books) { book ->
-                BookItem(book)
+            items(state.items.size) { i ->
+                BookItem(state.items[i])
+
+                if (i >= state.items.size - 1 && !state.endReached && !state.isLoading) {
+                    viewModel.loadNextBooks()
+                }
+            }
+            item {
+                if (state.isLoading) {
+                    Row(
+                        modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
             }
         }
     }
@@ -137,17 +158,29 @@ fun BookItem(book: Book) {
             modifier = Modifier
                 .padding(horizontal = 10.dp)
         ) {
+
             // Název knihy
             Text(
                 text = book.volumeInfo.title,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )
+
             // Autor knihy
             Text(
-                text = book.volumeInfo.authors?.joinToString(", ") ?: "Neznámý autor",
-                fontSize = 14.sp
+                text = (book.volumeInfo.authors?.joinToString(", ")) ?: "Neznámý autor",
+                fontSize = 14.sp,
+                color = Color.Gray
             )
+
+            // Popis knihy
+            Text(
+                text = book.volumeInfo.description.toString(),
+                maxLines = 3,
+                fontSize = 14.sp,
+                lineHeight = 16.sp,
+            )
+
         }
     }
 }

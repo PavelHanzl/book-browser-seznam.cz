@@ -9,6 +9,9 @@ interface BookApiService {
     @GET("volumes")
     suspend fun searchBooks(
         @Query("q") query: String,
-        @Query("langRestrict") language: String = "cs"
+        @Query("orderBy") orderBy: String = "newest",
+        @Query("langRestrict") language: String = "cs",
+        @Query("startIndex") startIndex: Int,
+        @Query("maxResults") maxResults: Int
     ): Response<BookSearchResponse>
 }
