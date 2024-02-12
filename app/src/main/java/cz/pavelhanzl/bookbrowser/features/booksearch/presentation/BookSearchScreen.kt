@@ -31,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavController
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import cz.pavelhanzl.bookbrowser.features.bookdetail.Model.Book
@@ -49,7 +51,8 @@ fun BookSearchScreen(
         viewModelStoreOwner = LocalContext.current as ComponentActivity
     )
 ) {
-    viewModel.getListOfBooks()
+    //viewModel.getListOfBooks()
+    val bookPagingItems: LazyPagingItems<Book> = viewModel.booksState.collectAsLazyPagingItems()
 
     Scaffold {
         Column(
@@ -67,8 +70,12 @@ fun BookSearchScreen(
                     onTextChange = { viewModel.onSearchTextChanged(it) },
                 )
 
-                BookList(
-                    viewModel.booklist
+//                BookList(
+//                    viewModel.booklist
+//                )
+
+                BookList2(
+                    bookPagingItems
                 )
 //                Button(
 //                    onClick = { viewModel.addBookToList() }
@@ -114,6 +121,19 @@ fun BookList(books: List<Book>?) {
     }
 
 }
+
+@Composable
+fun BookList2(books: LazyPagingItems<Book>?) {
+    books?.let {
+        LazyColumn {
+            items(books.itemCount) { index ->
+                BookItem(books[index]!!)
+            }
+        }
+    }
+
+}
+
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable

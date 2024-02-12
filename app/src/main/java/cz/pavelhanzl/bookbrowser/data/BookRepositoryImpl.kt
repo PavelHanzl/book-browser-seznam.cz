@@ -1,7 +1,12 @@
 package cz.pavelhanzl.bookbrowser.data
 
+import BooksPagingSource
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import cz.pavelhanzl.bookbrowser.features.bookdetail.Model.Book
 import cz.pavelhanzl.bookbrowser.features.booksearch.model.BookSearchResponse
+import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
 class BookRepositoryImpl(
@@ -10,7 +15,7 @@ class BookRepositoryImpl(
     override suspend fun searchBooksByAuthor(authorName: String): List<Book>? {
 
         //vyhledává všechny knihy s daným autorem pomocí Google Api
-        val response = dataSource.searchBooks("inauthor:${authorName}")
+        val response = dataSource.searchBooks(query = "inauthor:${authorName}", pageSize = 2, startIndex = 0)
 
         if (response.isSuccessful && response.body() != null) {
             return purgedBookList(response, authorName)
@@ -18,6 +23,14 @@ class BookRepositoryImpl(
             return null
         }
 
+
+    }
+
+    override fun searchBooksByAuthorStream(): Flow<PagingData<Book>> {
+        return Pager(
+            config = PagingConfig(pageSize = 5),
+            pagingSourceFactory = { BooksPagingSource(dataSource) }
+        ).flow
 
     }
 

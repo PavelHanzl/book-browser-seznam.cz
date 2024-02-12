@@ -88,4 +88,7 @@ dependencies {
     //Glide for images
     implementation ("com.github.bumptech.glide:compose:1.0.0-beta01")
 
+    //Paging
+    implementation("androidx.paging:paging-compose:3.3.0-alpha03")
+
 }
