@@ -1,4 +1,4 @@
-package cz.pavelhanzl.bookbrowser.features.bookdetail.Model
+package cz.pavelhanzl.bookbrowser.features.bookdetail.model
 
 data class Book(
     val id: String,

@@ -1,43 +1,44 @@
 package cz.pavelhanzl.bookbrowser.data
 
-import cz.pavelhanzl.bookbrowser.features.bookdetail.Model.Book
-
 class PaginatorImpl<Key, Item>(
-    private val initialKey:Key,
+    private val initialIndex:Key,
+    private val maxResultsPerPage: Key,
     private inline val onLoadUpdated: (Boolean) -> Unit,
-    private inline val onRequest: suspend (nextKey: Key) -> Result<List<Item>>,
-    private inline val getNextKey: suspend (List<Item>) -> Key,
+    private inline val onRequest: suspend (nextIndex: Key) -> Result<List<Item>>,
+    private inline val getNextIndex: suspend (currentIndex: Key, maxResults:Key) -> Key,
     private inline val onError: suspend (Throwable?) -> Unit,
     private inline val onSuccess: suspend (items: List<Item>, newKey: Key) -> Unit
 ): Paginator<Key, Item>{
 
-    private var currentKey: Key = initialKey
+    private var currentIndex: Key = initialIndex
     private var isMakingRequest = false
+    private var items:List<Item> = emptyList()
     override suspend fun loadNextItems() {
         if (isMakingRequest){
             return
         }
         isMakingRequest = true
         onLoadUpdated(true)
-        val result = onRequest(currentKey)
+        val result = onRequest(currentIndex)
         isMakingRequest = false
 
-        var items = emptyList<Item>()
+
+
         items = result.getOrElse {
-            items= emptyList()
             onError(it)
             onLoadUpdated(false)
             return
         }
 
-        currentKey = getNextKey(items)
+        currentIndex = getNextIndex(currentIndex,maxResultsPerPage)
 
-        onSuccess(items,currentKey)
+        onSuccess(items,currentIndex)
         onLoadUpdated(false)
 
     }
 
     override fun reset() {
-        currentKey = initialKey
+        currentIndex = initialIndex
+        items = emptyList()
     }
 }

@@ -7,56 +7,46 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.pavelhanzl.bookbrowser.data.BookRepository
 import cz.pavelhanzl.bookbrowser.data.PaginatorImpl
-import cz.pavelhanzl.bookbrowser.features.bookdetail.Model.Book
+import cz.pavelhanzl.bookbrowser.features.bookdetail.model.Book
 import kotlinx.coroutines.launch
 
 class BookSearchViewModel(val bookRepository: BookRepository) : ViewModel() {
 
     var state by mutableStateOf(ScreenState())
 
-    var booklist by mutableStateOf<List<Book>?>(null)
-        private set
-
-    var searchText by mutableStateOf("")
-
-
     private val paginator = PaginatorImpl(
-        initialKey = state.startIndex,
+        initialIndex = state.startIndex,
+        maxResultsPerPage = state.maxResults,
         onLoadUpdated = {
             state = state.copy(isLoading = it)
         },
-        onRequest = { nextPage ->
-            bookRepository.searchBooksByAuthor("Nesbo",nextPage,state.maxResults)
+        onRequest = { startIndex ->
+            bookRepository.searchBooksByAuthor(state.searchText, startIndex, state.maxResults)
         },
-        getNextKey = {
-             state.startIndex + state.maxResults
-
+        getNextIndex = { currentIndex, maxResults ->
+            currentIndex+maxResults
         },
         onError = {
-            state = state.copy(error=it?.localizedMessage)
+            state = state.copy(error = it?.localizedMessage)
         },
-        onSuccess = { items, newKey ->
-            //TODO refactor
-            if (items!=null){
+        onSuccess = { items, newStartIndex ->
                 val rawList = state.items + items
-                val uniqueBookList = uniqueBookList(rawList,"Nesbo")
+                val uniqueBookList = uniqueBookList(rawList, state.searchText)
 
-            state = state.copy(
-                items = uniqueBookList,
-                startIndex = newKey,
-                endReached = items.isEmpty()
-            )
-            }
+                state = state.copy(
+                    items = uniqueBookList,
+                    startIndex = newStartIndex,
+                    endReached = items.isEmpty()
+                )
 
         }
 
     )
 
 
-
-    init {
-        loadNextBooks()
-    }
+//    init {
+//        loadNextBooks()
+//    }
 
     private fun uniqueBookList(
         rawList: List<Book>,
@@ -69,7 +59,8 @@ class BookSearchViewModel(val bookRepository: BookRepository) : ViewModel() {
         // proto list ještě filtrujeme na úrovni aplikace
         val filteredList = rawList?.filter { book ->
             book.volumeInfo.authors?.any { author ->
-                authorName in author
+                //case insensitive porovnávání
+                authorName.lowercase() in author.lowercase()
             } ?: false
         }
 
@@ -82,35 +73,36 @@ class BookSearchViewModel(val bookRepository: BookRepository) : ViewModel() {
 
 
     fun loadNextBooks() {
-    viewModelScope.launch {
-        paginator.loadNextItems()
-    }
-    }
-
-
-
-    fun getListOfBooks() {
-        //Return empty list if Searchbar is empty
-        if (searchText == "") {
-            booklist = emptyList()
-            return}
-
         viewModelScope.launch {
-            try {
-                // čistý seznam knížek vrácený od google api
-                //booklist = bookRepository.searchBooksByAuthor(searchText)
-
-            } catch (e: Exception) {
-
-            }
+            paginator.loadNextItems()
         }
     }
 
     fun onSearchTextChanged(newText: String) {
-        searchText = newText
+        state = state.copy(
+            searchText = newText
+        )
     }
 
+    fun onSearchButtonClick() {
+        //Při kliku na search button nejdříve smaže recycleview
+        state=state.copy(
+            items = emptyList(),
+        )
 
+        //vyresetuje paginátor
+        paginator.reset()
+
+        //Return empty list if Searchbar is empty
+        if (state.searchText == "") {
+            return
+        }
+
+        //zavolá načtení položek
+        viewModelScope.launch {
+            paginator.loadNextItems()
+        }
+    }
 }
 
 data class ScreenState(
@@ -119,5 +111,6 @@ data class ScreenState(
     val error: String? = null,
     val endReached: Boolean = false,
     val startIndex: Int = 0,
-    val maxResults: Int = 10
+    val maxResults: Int = 10,
+    val searchText: String = ""
 )

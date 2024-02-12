@@ -1,6 +1,6 @@
 package cz.pavelhanzl.bookbrowser.data
 
-import cz.pavelhanzl.bookbrowser.features.bookdetail.Model.Book
+import cz.pavelhanzl.bookbrowser.features.bookdetail.model.Book
 
 interface BookRepository {
 
