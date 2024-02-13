@@ -59,7 +59,8 @@ fun BookDetailScreen(
 //            viewModel.loadBookDetail(bookId)
 //        }
 //    }
-  val book = viewModel.selectedBook
+    val book = viewModel.selectedBook
+
     Scaffold(topBar = {
         TopAppBar(navigationIcon = {
             IconButton(modifier = Modifier.size(55.dp), onClick = {
@@ -74,8 +75,8 @@ fun BookDetailScreen(
             viewModel.selectedBook?.volumeInfo?.let {
                 Text(
                     modifier = Modifier
-                        .padding(end=16.dp),
-                    text=it.title,
+                        .padding(end = 16.dp),
+                    text = it.title,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     fontSize = 16.sp
