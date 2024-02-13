@@ -12,4 +12,5 @@
     <string name="enter_author_name">Zadejte jméno autora</string>
     <string name="start_searching">Zahajte vyhledávání.</string>
     <string name="no_books_found_for_specified_author">Nebyly nalezeny žádné knihy \nod zadaného autora.</string>
+    <string name="book_is_only_on_google_books">Kniha nemá záznam v obchodě google play, pouze na Google Books.</string>
 </resources>

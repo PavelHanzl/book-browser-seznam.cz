@@ -13,7 +13,9 @@ data class VolumeInfo(
     val publishedDate: String,
     val description: String?,
     val imageLinks: ImageLinks?,
+    val previewLink: String?,
     val infoLink:String?
+
 )
 
 data class ImageLinks(
@@ -48,7 +50,9 @@ fun Book.Companion.sampleBook():Book{
                 "https://books.google.com/books/content?id=hZZBEAAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
                 "https://books.google.com/books/content?id=hZZBEAAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
             ),
-            "https://play.google.com/store/books/details?id=wlxZDwAAQBAJ&source=gbs_api"
+            "https://play.google.com/store/books/details?id=wlxZDwAAQBAJ&source=gbs_api",
+            "https://books.google.cz/books?id=B2Vh0AEACAAJ&hl=&source=gbs_api"
+
         )
     )
 }

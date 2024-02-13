@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class BookSearchViewModel(val bookRepository: BookRepository) : ViewModel() {
 
-    var state by mutableStateOf(ScreenState())
+    var state by mutableStateOf(BookSearchScreenState())
 
     private val paginator = PaginatorImpl(
         initialIndex = state.startIndex,
@@ -108,7 +108,7 @@ class BookSearchViewModel(val bookRepository: BookRepository) : ViewModel() {
     }
 }
 
-data class ScreenState(
+data class BookSearchScreenState(
     val isLoading: Boolean = false,
     val items: List<Book> = emptyList(),
     val error: String? = null,

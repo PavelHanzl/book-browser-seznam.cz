@@ -2,10 +2,12 @@ package cz.pavelhanzl.bookbrowser.data
 
 import cz.pavelhanzl.bookbrowser.features.bookdetail.model.Book
 import cz.pavelhanzl.bookbrowser.features.booksearch.model.BookSearchResponse
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Url
 
 interface BookApiService {
     @GET("volumes")
@@ -21,4 +23,8 @@ interface BookApiService {
     suspend fun searchBookById(
         @Path("id") bookId: String
     ): Response<Book>
+
+    @GET
+    suspend fun getPage(@Url url: String): Response<ResponseBody>
+
 }

@@ -34,6 +34,7 @@ val appModule = module {
     }
     viewModel { (savedStateHandle: SavedStateHandle) ->
         BookDetailViewModel(
+            dataSource = get(),
             savedStateHandle = savedStateHandle,
             bookRepository =  get()
         )
