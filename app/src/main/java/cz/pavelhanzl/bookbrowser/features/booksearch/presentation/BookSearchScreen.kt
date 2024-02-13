@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
-
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -55,19 +54,52 @@ fun BookSearchScreen(
     navController: NavController,
     viewModel: BookSearchViewModel = koinViewModel()
 ) {
+    val state = viewModel.state
 
     Scaffold(
         topBar = {
             SearchBar(viewModel)
         }
     ) { it ->
-        BookList(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .imePadding(),
-            viewModel = viewModel
-        )
+
+        when {
+            state.isLoading && state.items.isEmpty() -> {
+                Box(modifier = Modifier
+                    .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ){
+                    CircularProgressIndicator()
+                }
+            }
+
+            state.items.isNotEmpty() -> {
+                BookList(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(it)
+                        .imePadding(),
+                    viewModel = viewModel
+                )
+            }
+
+            else -> {
+
+                Box(modifier = Modifier
+                    .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ){
+                    Text(
+                        text = "Zadejte autora a ",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
+                    )
+                }
+            }
+
+        }
+
+
+
     }
 
 }

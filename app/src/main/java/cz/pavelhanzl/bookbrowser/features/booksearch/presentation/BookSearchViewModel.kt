@@ -85,7 +85,7 @@ class BookSearchViewModel(val bookRepository: BookRepository) : ViewModel() {
     }
 
     fun onSearchButtonClick() {
-        //Při kliku na search button nejdříve smaže recycleview
+        //Při kliku na search button nejdříve smaže lazycollumn
         state=state.copy(
             items = emptyList(),
         )
