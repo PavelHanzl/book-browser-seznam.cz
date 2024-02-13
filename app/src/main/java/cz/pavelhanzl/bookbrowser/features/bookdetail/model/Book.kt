@@ -12,7 +12,8 @@ data class VolumeInfo(
     val authors: List<String>,
     val publishedDate: String,
     val description: String?,
-    val imageLinks: ImageLinks?
+    val imageLinks: ImageLinks?,
+    val infoLink:String?
 )
 
 data class ImageLinks(
@@ -45,7 +46,8 @@ fun Book.Companion.sampleBook():Book{
             ImageLinks(
                 "https://books.google.com/books/content?id=hZZBEAAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
                 "https://books.google.com/books/content?id=hZZBEAAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
-            )
+            ),
+            "https://play.google.com/store/books/details?id=wlxZDwAAQBAJ&source=gbs_api"
         )
     )
 }

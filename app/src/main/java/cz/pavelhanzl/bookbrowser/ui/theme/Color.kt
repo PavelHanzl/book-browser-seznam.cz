@@ -2,6 +2,11 @@ package cz.pavelhanzl.bookbrowser.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+val MyLightGray = Color(0xFFf3f3f3)
+val MyDarkGray = Color(0xFF555555)
+val MyGray = Color(0xFFaaaaaa)
+
+
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
 val Pink80 = Color(0xFFEFB8C8)

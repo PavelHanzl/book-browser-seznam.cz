@@ -23,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -133,7 +134,7 @@ fun SearchBar(viewModel: BookSearchViewModel) {
 
     Row(
         modifier = Modifier
-            .background(Color(0xFFf3f3f3))
+            .background(MaterialTheme.colorScheme.secondary)
             .fillMaxWidth()
             .padding(10.dp)
             .padding(bottom = 20.dp)
