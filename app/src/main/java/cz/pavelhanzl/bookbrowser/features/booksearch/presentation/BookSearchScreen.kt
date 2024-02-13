@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -48,6 +49,7 @@ import com.bumptech.glide.integration.compose.placeholder
 import cz.pavelhanzl.bookbrowser.R
 import cz.pavelhanzl.bookbrowser.features.bookdetail.model.Book
 import org.koin.androidx.compose.koinViewModel
+import kotlin.math.sin
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,6 +64,10 @@ fun BookSearchScreen(
             SearchBar(viewModel)
         }
     ) { it ->
+        
+        Button(onClick = { navController.navigate("bookdetail/1232131") }) {
+            Text(text = "naviguj na bookdetail")
+        }
 
         when {
             state.isLoading && state.items.isEmpty() -> {
@@ -145,7 +151,8 @@ fun SearchBar(viewModel: BookSearchViewModel) {
             onValueChange = { newText ->
                 viewModel.onSearchTextChanged(newText)
             },
-            label = { Text("Zadejte jméno autora") }
+            singleLine = true,
+            label = { Text("Zadejte jméno autora")}
         )
 
         Spacer(modifier = Modifier.size(8.dp))
@@ -217,8 +224,8 @@ fun BookItem(book: Book) {
                 .size(100.dp),
             model = book.volumeInfo.imageLinks?.smallThumbnailToHttps(),
             contentDescription = "Book image thumbnail",
-            loading = placeholder(R.drawable.ic_launcher_background),
-            failure = placeholder(R.drawable.ic_launcher_foreground),
+            loading = placeholder(R.drawable.loading_placeholder),
+            failure = placeholder(R.drawable.notfound_placeholder),
             transition = CrossFade
         )
         Column(
