@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,6 +45,7 @@ import com.bumptech.glide.integration.compose.placeholder
 import com.bumptech.glide.integration.ktx.ExperimentGlideFlows
 import cz.pavelhanzl.bookbrowser.R
 import cz.pavelhanzl.bookbrowser.features.bookdetail.model.Book
+import cz.pavelhanzl.bookbrowser.navigation.NavigationStrings
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,7 +83,7 @@ fun BookSearchScreen(
                     Text(
                         modifier = Modifier
                             .padding(16.dp),
-                        text = "Nebyly nalezeny žádné knihy \nod zadaného autora.",
+                        text = stringResource(R.string.no_books_found_for_specified_author),
                         color = Color.Gray,
                         fontSize = 16.sp,
                         textAlign = TextAlign.Center
@@ -109,7 +111,7 @@ fun BookSearchScreen(
                     Text(
                         modifier = Modifier
                             .padding(16.dp),
-                        text = "Zahajte vyhledávání.",
+                        text = stringResource(R.string.start_searching),
                         color = Color.Gray,
                         fontSize = 16.sp,
                         textAlign = TextAlign.Center
@@ -146,7 +148,7 @@ fun SearchBar(viewModel: BookSearchViewModel) {
                 viewModel.onSearchTextChanged(newText)
             },
             singleLine = true,
-            label = { Text("Zadejte jméno autora") }
+            label = { Text(stringResource(R.string.enter_author_name)) }
         )
 
         Spacer(modifier = Modifier.size(8.dp))
@@ -159,7 +161,7 @@ fun SearchBar(viewModel: BookSearchViewModel) {
                 viewModel.onSearchButtonClick()
             }
         ) {
-            Icon(Icons.Outlined.Search, contentDescription = "Hledat")
+            Icon(Icons.Outlined.Search, contentDescription = stringResource(R.string.search))
         }
     }
 }
@@ -180,7 +182,7 @@ fun BookList(
         items(state.items.size) { i ->
             BookItem(state.items[i],
                 onClick = {
-                    navController.navigate("bookdetail/${state.items[i].id}")
+                    navController.navigate("${NavigationStrings.BOOKDETAIL}/${state.items[i].id}")
                 })
 
             //loads next page of books
@@ -224,7 +226,7 @@ fun BookItem(
             modifier = Modifier
                 .size(100.dp),
             model = book.volumeInfo.imageLinks?.smallThumbnailToHttps(),
-            contentDescription = "Book image thumbnail",
+            contentDescription = stringResource(R.string.book_image_thumbnail),
             loading = placeholder(R.drawable.loading_placeholder),
             failure = placeholder(R.drawable.notfound_placeholder),
             transition = CrossFade
@@ -244,15 +246,15 @@ fun BookItem(
             // Book authors
             Text(
                 text = (book.volumeInfo?.authors?.take(2)
-                    ?.joinToString(", ")) + if ((book.volumeInfo.authors.size ?: 0) > 2
-                ) " a další..." else "", //shows only first two authors and if there are >2 authors then it shows "and more..."
+                    ?.joinToString(stringResource(R.string.comma_separator))) + if ((book.volumeInfo.authors.size ?: 0) > 2
+                ) stringResource(R.string.and_more) else "", //shows only first two authors and if there are >2 authors then it shows "and more..."
                 fontSize = 14.sp,
                 color = Color.Gray
             )
 
             // Preview of book description
             Text(
-                text = book.volumeInfo.description ?: "(Popis není dostupný)",
+                text = book.volumeInfo.description ?: stringResource(R.string.description_is_not_available),
                 maxLines = 3,
                 fontSize = 14.sp,
                 lineHeight = 16.sp,

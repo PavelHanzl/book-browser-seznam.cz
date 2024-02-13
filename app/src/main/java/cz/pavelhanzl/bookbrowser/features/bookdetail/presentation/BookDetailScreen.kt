@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -58,7 +59,7 @@ fun BookDetailScreen(
                 IconButton(modifier = Modifier.size(55.dp), onClick = {
                     navController.navigateUp()
                 }) {
-                    Icon(Icons.Outlined.ArrowBack, contentDescription = "Zpět")
+                    Icon(Icons.Outlined.ArrowBack, contentDescription = stringResource(R.string.back))
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
@@ -112,7 +113,7 @@ fun BookDetailHeader(
             loading = placeholder(R.drawable.loading_placeholder),
             failure = placeholder(R.drawable.notfound_placeholder),
             transition = CrossFade,
-            contentDescription = "Book Thumbnail",
+            contentDescription = stringResource(R.string.book_image_thumbnail),
             modifier = Modifier
                 .height(200.dp)
                 .fillMaxWidth()
@@ -131,7 +132,7 @@ fun BookDetailHeader(
 
         //Book authors
         Text(
-            text = authors.joinToString(", "),
+            text = authors.joinToString(stringResource(id = R.string.comma_separator)),
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center
         )
@@ -160,7 +161,7 @@ fun BookDetailHeader(
             } catch (ae: ActivityNotFoundException) { //if google play not installed, open in browser
                 Toast.makeText(
                     context,
-                    "Odkaz se nepodařilo otevřít v Google Play - otevírám v prohlížeči.",
+                    R.string.cannotOpenInGooglePlay,
                     Toast.LENGTH_LONG
                 ).show()
                 val intent = Intent(Intent.ACTION_VIEW).apply {
@@ -168,11 +169,15 @@ fun BookDetailHeader(
                 }
                 context.startActivity(intent)
             } catch (e: Exception) { // else inform user about invalid link
-                Toast.makeText(context, "Odkaz se nepodařilo otevřít.", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    context,
+                    R.string.link_cannot_be_opened,
+                    Toast.LENGTH_LONG
+                ).show()
             }
 
         }) {
-            Text(text = "Otevřít na Google Play")
+            Text(text = stringResource(R.string.open_at_google_play))
         }
 
         Spacer(modifier = Modifier.height(16.dp))

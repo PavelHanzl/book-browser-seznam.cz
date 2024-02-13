@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">BookBrowser</string>
+    <string name="cannotOpenInGooglePlay">Odkaz se nepodařilo otevřít v Google Play - otevírám v prohlížeči.</string>
+    <string name="book_image_thumbnail">Book Thumbnail</string>
+    <string name="back">Zpět</string>
+    <string name="link_cannot_be_opened">Odkaz se nepodařilo otevřít.</string>
+    <string name="open_at_google_play">Otevřít na Google Play</string>
+    <string name="comma_separator">", "</string>
+    <string name="and_more">" a další..."</string>
+    <string name="description_is_not_available">(Popis není dostupný)</string>
+    <string name="search">Hledat</string>
+    <string name="enter_author_name">Zadejte jméno autora</string>
+    <string name="start_searching">Zahajte vyhledávání.</string>
+    <string name="no_books_found_for_specified_author">Nebyly nalezeny žádné knihy \nod zadaného autora.</string>
 </resources>
