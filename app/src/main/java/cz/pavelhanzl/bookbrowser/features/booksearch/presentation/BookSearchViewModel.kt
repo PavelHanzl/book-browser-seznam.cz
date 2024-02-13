@@ -38,34 +38,28 @@ class BookSearchViewModel(val bookRepository: BookRepository) : ViewModel() {
                     startIndex = newStartIndex,
                     endReached = items.isEmpty()
                 )
-
         }
-
     )
 
-
-//    init {
-//        loadNextBooks()
-//    }
 
     private fun uniqueBookList(
         rawList: List<Book>,
         authorName: String
     ): List<Book> {
 
-        // občas google api vrátí knihu i když by ji němělo vrátit
-        // např pro autora Novák https://www.googleapis.com/books/v1/volumes?q=inauthor:Nov%C3%A1k
-        // vrátí mimo jiné i https://www.googleapis.com/books/v1/volumes/N0wWmueHMokC
-        // proto list ještě filtrujeme na úrovni aplikace
+        // sometimes google api returns a book when it shouldn't
+        // e.g. for the author Novák https://www.googleapis.com/books/v1/volumes?q=inauthor:Nov%C3%A1k
+        // returns https://www.googleapis.com/books/v1/volumes/N0wWmueHMokC among others
+        // that's why we filter the list at the application level
         val filteredList = rawList?.filter { book ->
             book.volumeInfo.authors?.any { author ->
-                //case insensitive porovnávání
+                //case insensitive comparison
                 authorName.lowercase() in author.lowercase()
             } ?: false
         }
 
-        //Filtruje jen unikátní názvy knížek
-        //Např pro autora Nesbø se vrací dvakrát kniho Netopýr https://www.googleapis.com/books/v1/volumes?q=inauthor:Nesb%C3%B8
+        //Filters only unique book titles
+        //E.g. for author Nesbø, the Netopýr returns twice https://www.googleapis.com/books/v1/volumes?q=inauthor:Nesb%C3%B8
         val uniqueBooklist = filteredList?.distinctBy { it.volumeInfo.title }
 
         return uniqueBooklist ?: emptyList()
@@ -85,12 +79,12 @@ class BookSearchViewModel(val bookRepository: BookRepository) : ViewModel() {
     }
 
     fun onSearchButtonClick() {
-        //Při kliku na search button nejdříve smaže lazycollumn
+        //Clicking on the search button first deletes the lazycollumn
         state=state.copy(
             items = emptyList(),
         )
 
-        //vyresetuje paginátor
+        //resets paginator
         paginator.reset()
 
         //Return empty list if Searchbar is empty
@@ -102,12 +96,12 @@ class BookSearchViewModel(val bookRepository: BookRepository) : ViewModel() {
             return
         }
 
-        //očekává výsledek, jelikož není prázdný searchbar
+        //expects a result since the searchbar is not empty
         state=state.copy(
             resultExpected = true
         )
 
-        //zavolá načtení položek
+        //calls loading of items
         viewModelScope.launch {
             paginator.loadNextItems()
         }

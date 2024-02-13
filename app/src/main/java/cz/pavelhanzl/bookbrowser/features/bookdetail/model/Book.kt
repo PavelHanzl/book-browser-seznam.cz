@@ -35,6 +35,7 @@ data class ImageLinks(
 
 }
 
+//used for UI prototyping
 fun Book.Companion.sampleBook():Book{
     return Book(
         "121",

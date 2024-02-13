@@ -17,7 +17,11 @@ fun AppNavHost(
     startDestination: String = NavigationStrings.BOOKSEARCH.toString()
 ) {
     NavHost(navController = navController, startDestination = startDestination) {
+
+        //BookSearch screen
         composable(NavigationStrings.BOOKSEARCH.toString()) { BookSearchScreen(navController) }
+
+        //BookDetail screen with id as a string parameter
         composable(
             "${NavigationStrings.BOOKDETAIL}/{bookId}",
             arguments = listOf(navArgument("bookId"){
@@ -30,10 +34,8 @@ fun AppNavHost(
             BookDetailScreen(
                 navController,
                 bookId
-                //pass fetch user data ie. UserInfo
             )
         }
 
-        /*...*/
     }
 }

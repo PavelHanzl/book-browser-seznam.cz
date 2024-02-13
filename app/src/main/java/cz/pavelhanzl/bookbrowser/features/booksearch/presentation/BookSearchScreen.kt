@@ -1,6 +1,5 @@
 package cz.pavelhanzl.bookbrowser.features.booksearch.presentation
 
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,8 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Warning
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -44,13 +40,11 @@ import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.CrossFade
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.bumptech.glide.integration.ktx.ExperimentGlideFlows
-import com.bumptech.glide.integration.compose.Placeholder
 import com.bumptech.glide.integration.compose.placeholder
+import com.bumptech.glide.integration.ktx.ExperimentGlideFlows
 import cz.pavelhanzl.bookbrowser.R
 import cz.pavelhanzl.bookbrowser.features.bookdetail.model.Book
 import org.koin.androidx.compose.koinViewModel
-import kotlin.math.sin
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,8 +60,9 @@ fun BookSearchScreen(
         }
     ) { it ->
 
-        when {
-            state.isLoading && state.items.isEmpty() -> {
+        when { //determines what is displayed on a blank screen without books
+
+            state.isLoading && state.items.isEmpty() -> { //show loading progress indicator
                 Box(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -77,7 +72,7 @@ fun BookSearchScreen(
                 }
             }
 
-            state.resultExpected && state.items.isEmpty() -> {
+            state.resultExpected && state.items.isEmpty() -> { //show there was nothing found for given author
                 Box(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -94,7 +89,7 @@ fun BookSearchScreen(
                 }
             }
 
-            state.items.isNotEmpty() -> {
+            state.items.isNotEmpty() -> { //if book list is not empty, show returned books
                 BookList(
                     modifier = Modifier
                         .fillMaxSize()
@@ -105,7 +100,7 @@ fun BookSearchScreen(
                 )
             }
 
-            else -> {
+            else -> { //else default state - begin your search.
                 Box(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -141,6 +136,7 @@ fun SearchBar(viewModel: BookSearchViewModel) {
             .height(IntrinsicSize.Max),
         verticalAlignment = Alignment.Bottom
     ) {
+
         val focusManager = LocalFocusManager.current
 
         OutlinedTextField(
@@ -154,7 +150,6 @@ fun SearchBar(viewModel: BookSearchViewModel) {
         )
 
         Spacer(modifier = Modifier.size(8.dp))
-
 
         OutlinedIconButton(
             modifier = Modifier
@@ -188,10 +183,13 @@ fun BookList(
                     navController.navigate("bookdetail/${state.items[i].id}")
                 })
 
+            //loads next page of books
             if (i >= state.items.size - 1 && !state.endReached && !state.isLoading) {
                 viewModel.loadNextBooks()
             }
         }
+
+        //shows loading indicator if loading of next page is in progress
         item {
             if (state.isLoading) {
                 Row(
@@ -206,11 +204,9 @@ fun BookList(
             }
         }
     }
-
-
 }
 
-@OptIn(ExperimentalGlideComposeApi::class, ExperimentGlideFlows::class)
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun BookItem(
     book: Book,
@@ -223,7 +219,7 @@ fun BookItem(
             .padding(16.dp),
         verticalAlignment = Alignment.Top
     ) {
-        // Obrázek knihy
+        // Book image preview
         GlideImage(
             modifier = Modifier
                 .size(100.dp),
@@ -238,23 +234,23 @@ fun BookItem(
                 .padding(horizontal = 10.dp)
         ) {
 
-            // Název knihy
+            // Book name
             Text(
                 text = book.volumeInfo.title,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )
 
-            // Autor knihy
+            // Book authors
             Text(
                 text = (book.volumeInfo?.authors?.take(2)
                     ?.joinToString(", ")) + if ((book.volumeInfo.authors.size ?: 0) > 2
-                ) " a další..." else "",
+                ) " a další..." else "", //shows only first two authors and if there are >2 authors then it shows "and more..."
                 fontSize = 14.sp,
                 color = Color.Gray
             )
 
-            // Popis knihy
+            // Preview of book description
             Text(
                 text = book.volumeInfo.description ?: "(Popis není dostupný)",
                 maxLines = 3,

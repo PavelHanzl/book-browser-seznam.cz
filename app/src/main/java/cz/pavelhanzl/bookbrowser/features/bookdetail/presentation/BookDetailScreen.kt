@@ -3,11 +3,8 @@ package cz.pavelhanzl.bookbrowser.features.bookdetail.presentation
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
-import android.text.Html
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,16 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.Button
-import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -34,17 +26,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -53,15 +39,10 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import cz.pavelhanzl.bookbrowser.R
-import cz.pavelhanzl.bookbrowser.features.bookdetail.model.Book
 import cz.pavelhanzl.bookbrowser.features.bookdetail.model.VolumeInfo
-import cz.pavelhanzl.bookbrowser.features.bookdetail.model.sampleBook
-import cz.pavelhanzl.bookbrowser.features.booksearch.presentation.BookSearchViewModel
-import cz.pavelhanzl.bookbrowser.features.booksearch.presentation.SearchBar
 import cz.pavelhanzl.bookbrowser.utils.ktx.removeHtmlFormatting
 import cz.pavelhanzl.bookbrowser.utils.ktx.toCzechFormattedDate
 import org.koin.androidx.compose.koinViewModel
-import java.lang.Exception
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,7 +64,8 @@ fun BookDetailScreen(
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.secondary,
                 titleContentColor = MaterialTheme.colorScheme.primary,
-            ), title = {
+            ),
+            title = {
                 viewModel.selectedBook?.volumeInfo?.let {
                     Text(
                         modifier = Modifier
@@ -105,7 +87,6 @@ fun BookDetailScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-
             book?.volumeInfo?.let {
                 BookDetailHeader(it)
 
@@ -113,8 +94,6 @@ fun BookDetailScreen(
 
                 BookDetailBody(it)
             }
-
-
         }
     }
 }
@@ -127,6 +106,7 @@ fun BookDetailHeader(
 
     with(volumeInfo) {
 
+        //Preview image
         GlideImage(
             model = imageLinks?.smallThumbnailToHttps(),
             loading = placeholder(R.drawable.loading_placeholder),
@@ -140,6 +120,7 @@ fun BookDetailHeader(
 
         Spacer(modifier = Modifier.height(20.dp))
 
+        //Book title
         Text(
             text = title,
             style = MaterialTheme.typography.headlineSmall,
@@ -148,12 +129,14 @@ fun BookDetailHeader(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        //Book authors
         Text(
             text = authors.joinToString(", "),
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center
         )
 
+        //Book publish date
         Text(
             text = publishedDate.toCzechFormattedDate(),
             style = MaterialTheme.typography.bodySmall
@@ -162,16 +145,19 @@ fun BookDetailHeader(
 
         val context = LocalContext.current
 
+        //Button with link to books detail on Google play
         OutlinedButton(onClick = {
             val urlOfBook = Uri.parse(infoLink)
 
-            try {
+            /*TODO vyresit otevreni v google play*/
+
+            try { //try open google play
                 val intent = Intent(Intent.ACTION_VIEW).apply {
                     data = urlOfBook
                     setPackage("com.android.vending")
                 }
                 context.startActivity(intent)
-            } catch (ae: ActivityNotFoundException) {
+            } catch (ae: ActivityNotFoundException) { //if google play not installed, open in browser
                 Toast.makeText(
                     context,
                     "Odkaz se nepodařilo otevřít v Google Play - otevírám v prohlížeči.",
@@ -181,7 +167,7 @@ fun BookDetailHeader(
                     data = urlOfBook
                 }
                 context.startActivity(intent)
-            } catch (e: Exception) {
+            } catch (e: Exception) { // else inform user about invalid link
                 Toast.makeText(context, "Odkaz se nepodařilo otevřít.", Toast.LENGTH_LONG).show()
             }
 
@@ -195,17 +181,13 @@ fun BookDetailHeader(
             color = MaterialTheme.colorScheme.tertiary,
             thickness = 1.dp
         )
-
-
-
     }
-
-
 }
 
 @Composable
 fun BookDetailBody(volumeInfo: VolumeInfo) {
     volumeInfo.description?.let { description ->
+        //book description
         Text(
             text = description.removeHtmlFormatting(),
             style = MaterialTheme.typography.bodyLarge,

@@ -11,7 +11,7 @@ interface BookApiService {
     @GET("volumes")
     suspend fun searchBooks(
         @Query("q") query: String,
-        @Query("orderBy") orderBy: String = "newest",
+        @Query("orderBy") orderBy: String = "newest", //if not sorted Google Api can return different response for same API call, for example you can try reloading this endpoint a you might get different responses for each api call https://www.googleapis.com/books/v1/volumes?q=inauthor:Nesbo&langRestrict=cs&startIndex=10&maxResults=3
         @Query("langRestrict") language: String = "cs",
         @Query("startIndex") startIndex: Int,
         @Query("maxResults") maxResults: Int

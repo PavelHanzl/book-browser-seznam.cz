@@ -13,38 +13,31 @@ class BookRepositoryImpl(
         maxResults: Int
     ): Result<List<Book>> {
 
+        //used for bug fixing with Google api - to be deleted
         Log.d(
             "query-api",
             "https://www.googleapis.com/books/v1/volumes?q=inauthor:${authorName}&orderBy=newest&langRestrict=cs&startIndex=${startIndex}&maxResults=${maxResults} "
         )
-        //vyhledává všechny knihy s daným autorem pomocí Google Api
+
+        //search for every book with given author name Google Api
         val response = dataSource.searchBooks(
             query = "inauthor:${authorName}",
             startIndex = startIndex,
             maxResults = maxResults
         )
 
+        //returns result with list of books or empty list - not null
         return if (response.isSuccessful) {
             Result.success(response.body()?.items ?: emptyList())
         } else {
             return Result.success(emptyList())
         }
 
-//        if (response.isSuccessful && (response.body() != null)) {
-//            //TODO refactor
-//            if (response.body()!!.items == null)
-//                return Result.success(emptyList())
-//            else
-//                return Result.success(response.body()!!.items!!)
-//        } else {
-//            return Result.success(emptyList())
-//        }
     }
 
     override suspend fun searchBookById(bookId: String): Book {
 
-
-        //vyhledá knihu s daným Id
+        //search book with given id
         val response = dataSource.searchBookById(
             bookId = bookId
         )
