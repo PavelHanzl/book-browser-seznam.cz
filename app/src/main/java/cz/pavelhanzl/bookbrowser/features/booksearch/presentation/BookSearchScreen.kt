@@ -64,10 +64,6 @@ fun BookSearchScreen(
             SearchBar(viewModel)
         }
     ) { it ->
-        
-        Button(onClick = { navController.navigate("bookdetail/1232131") }) {
-            Text(text = "naviguj na bookdetail")
-        }
 
         when {
             state.isLoading && state.items.isEmpty() -> {
@@ -103,7 +99,8 @@ fun BookSearchScreen(
                         .fillMaxSize()
                         .padding(it)
                         .imePadding(),
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    navController
                 )
             }
 
@@ -152,7 +149,7 @@ fun SearchBar(viewModel: BookSearchViewModel) {
                 viewModel.onSearchTextChanged(newText)
             },
             singleLine = true,
-            label = { Text("Zadejte jméno autora")}
+            label = { Text("Zadejte jméno autora") }
         )
 
         Spacer(modifier = Modifier.size(8.dp))
@@ -174,7 +171,8 @@ fun SearchBar(viewModel: BookSearchViewModel) {
 @Composable
 fun BookList(
     modifier: Modifier = Modifier,
-    viewModel: BookSearchViewModel
+    viewModel: BookSearchViewModel,
+    navController: NavController
 ) {
     val state = viewModel.state
 
@@ -184,7 +182,10 @@ fun BookList(
         verticalArrangement = Arrangement.Top
     ) {
         items(state.items.size) { i ->
-            BookItem(state.items[i])
+            BookItem(state.items[i],
+                onClick = {
+                    navController.navigate("bookdetail/${state.items[i].id}")
+                })
 
             if (i >= state.items.size - 1 && !state.endReached && !state.isLoading) {
                 viewModel.loadNextBooks()
@@ -210,10 +211,13 @@ fun BookList(
 
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentGlideFlows::class)
 @Composable
-fun BookItem(book: Book) {
+fun BookItem(
+    book: Book,
+    onClick: () -> Unit
+) {
     Row(
         modifier = Modifier
-            .clickable(onClick = { /* akce při kliknutí */ })
+            .clickable(onClick = onClick)
             .fillMaxWidth()
             .padding(16.dp),
         verticalAlignment = Alignment.Top

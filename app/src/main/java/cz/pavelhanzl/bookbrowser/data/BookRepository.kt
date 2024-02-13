@@ -6,4 +6,5 @@ interface BookRepository {
 
 
     suspend fun  searchBooksByAuthor(authorName: String, startIndex: Int, maxResults: Int): Result<List<Book>>
+    suspend fun  searchBookById(bookId: String): Book
 }

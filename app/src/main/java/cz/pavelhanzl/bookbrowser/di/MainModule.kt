@@ -1,5 +1,6 @@
 package cz.pavelhanzl.bookbrowser.di
 
+import androidx.lifecycle.SavedStateHandle
 import cz.pavelhanzl.bookbrowser.data.BookApiService
 import cz.pavelhanzl.bookbrowser.data.BookRepository
 import cz.pavelhanzl.bookbrowser.data.BookRepositoryImpl
@@ -26,6 +27,15 @@ val appModule = module {
 
 
     //Presentation
-    viewModel { BookSearchViewModel(get()) }
-    viewModel { BookDetailViewModel(get()) }
+    viewModel {
+         BookSearchViewModel(
+             bookRepository = get()
+         )
+    }
+    viewModel { (savedStateHandle: SavedStateHandle) ->
+        BookDetailViewModel(
+            savedStateHandle = savedStateHandle,
+            bookRepository =  get()
+        )
+    }
 }

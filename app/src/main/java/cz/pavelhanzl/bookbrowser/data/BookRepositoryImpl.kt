@@ -2,6 +2,7 @@ package cz.pavelhanzl.bookbrowser.data
 
 import android.util.Log
 import cz.pavelhanzl.bookbrowser.features.bookdetail.model.Book
+import cz.pavelhanzl.bookbrowser.features.bookdetail.model.sampleBook
 
 class BookRepositoryImpl(
     private val dataSource: BookApiService
@@ -38,5 +39,20 @@ class BookRepositoryImpl(
 //        } else {
 //            return Result.success(emptyList())
 //        }
+    }
+
+    override suspend fun searchBookById(bookId: String): Book {
+
+
+        //vyhledá knihu s daným Id
+        val response = dataSource.searchBookById(
+            bookId = bookId
+        )
+        return if (response.isSuccessful && response.body()!=null) {
+            response.body()!!
+        } else {
+            Book.sampleBook()
+        }
+
     }
 }

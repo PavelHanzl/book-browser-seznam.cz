@@ -19,7 +19,7 @@ fun AppNavHost(
     NavHost(navController = navController, startDestination = startDestination) {
         composable(NavigationStrings.BOOKSEARCH.toString()) { BookSearchScreen(navController) }
         composable(
-            NavigationStrings.BOOKDETAIL.toString(),
+            "${NavigationStrings.BOOKDETAIL}/{bookId}",
             arguments = listOf(navArgument("bookId"){
                 type = NavType.StringType
             })
