@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,11 +65,29 @@ fun BookSearchScreen(
 
         when {
             state.isLoading && state.items.isEmpty() -> {
-                Box(modifier = Modifier
-                    .fillMaxSize(),
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(),
                     contentAlignment = Alignment.Center
-                ){
+                ) {
                     CircularProgressIndicator()
+                }
+            }
+
+            state.resultExpected && state.items.isEmpty() -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .padding(16.dp),
+                        text = "Nebyly nalezeny žádné knihy \nod zadaného autora.",
+                        color = Color.Gray,
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
 
@@ -83,21 +102,23 @@ fun BookSearchScreen(
             }
 
             else -> {
-
-                Box(modifier = Modifier
-                    .fillMaxSize(),
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(),
                     contentAlignment = Alignment.Center
-                ){
+                ) {
                     Text(
-                        text = "Zadejte autora a ",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
+                        modifier = Modifier
+                            .padding(16.dp),
+                        text = "Zahajte vyhledávání.",
+                        color = Color.Gray,
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center
                     )
                 }
             }
 
         }
-
 
 
     }

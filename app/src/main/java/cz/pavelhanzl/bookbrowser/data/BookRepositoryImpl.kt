@@ -23,14 +23,20 @@ class BookRepositoryImpl(
             maxResults = maxResults
         )
 
-        if (response.isSuccessful && response.body() != null) {
-            //TODO refactor
-            if (response.body()!!.items == null)
-                return Result.success(emptyList())
-            else
-                return Result.success(response.body()!!.items)
+        return if (response.isSuccessful) {
+            Result.success(response.body()?.items ?: emptyList())
         } else {
             return Result.success(emptyList())
         }
+
+//        if (response.isSuccessful && (response.body() != null)) {
+//            //TODO refactor
+//            if (response.body()!!.items == null)
+//                return Result.success(emptyList())
+//            else
+//                return Result.success(response.body()!!.items!!)
+//        } else {
+//            return Result.success(emptyList())
+//        }
     }
 }

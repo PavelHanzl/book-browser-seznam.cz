@@ -95,8 +95,17 @@ class BookSearchViewModel(val bookRepository: BookRepository) : ViewModel() {
 
         //Return empty list if Searchbar is empty
         if (state.searchText == "") {
+
+            state=state.copy(
+                resultExpected = false
+            )
             return
         }
+
+        //očekává výsledek, jelikož není prázdný searchbar
+        state=state.copy(
+            resultExpected = true
+        )
 
         //zavolá načtení položek
         viewModelScope.launch {
@@ -112,5 +121,6 @@ data class ScreenState(
     val endReached: Boolean = false,
     val startIndex: Int = 0,
     val maxResults: Int = 10,
-    val searchText: String = ""
+    val searchText: String = "",
+    val resultExpected: Boolean = false
 )
