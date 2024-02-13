@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import cz.pavelhanzl.bookbrowser.data.BookRepository
 
 class BookDetailViewModel(val bookRepository: BookRepository) : ViewModel() {
-    val text = "viiiiiew"
+    var text = "viiiiiew"
 
 
 }
