@@ -23,7 +23,6 @@ Aplikace nebude nikde pracovat s daty žádného uživatele, měla by být jedno
 - Paginace
 - Glide
 
-
 ---
 
 **Pavel Hanzl**
